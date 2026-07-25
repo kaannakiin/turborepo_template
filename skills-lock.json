@@ -7,6 +7,12 @@
       "skillPath": "skills/.curated/react-hook-form/SKILL.md",
       "computedHash": "e9881245bb3f993f93c9fce336ca7a517ce39864aa46c95d04238fc5ebc4e4d1"
     },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "c1a68ee06a668aced9ab2b5fbdea5f989864123794eb2e056b339a072dbb7f10"
+    },
     "turborepo": {
       "source": "vercel/turborepo",
       "sourceType": "github",

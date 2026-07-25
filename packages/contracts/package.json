@@ -23,14 +23,14 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "^4.4.3"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.15.3",
-    "eslint": "^9.39.1",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
     "tsup": "^8.5.1",
-    "typescript": "5.9.2"
+    "typescript": "catalog:"
   }
 }

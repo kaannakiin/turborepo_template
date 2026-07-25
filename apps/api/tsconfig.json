@@ -1,0 +1,11 @@
+{
+  "extends": "@repo/typescript-config/nestjs.json",
+  "compilerOptions": {
+    // `outDir` must live here, not in the shared preset: TypeScript resolves
+    // paths from `extends` relative to the file that declares them, so a
+    // preset-level "./dist" would emit into packages/typescript-config/dist.
+    "outDir": "./dist"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

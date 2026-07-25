@@ -1,21 +1,40 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "cacheMaxAge": "14d",
+  "cacheMaxSize": "5GB",
+  "envMode": "strict",
+  "globalDependencies": ["pnpm-workspace.yaml"],
+  "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!**/*.md",
+        "!**/*.test.ts",
+        "!**/*.spec.ts"
+      ],
+      "outputs": ["dist/**", "!**/*.tsbuildinfo"],
+      "env": ["NODE_ENV", "VITE_API_URL"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^topo"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!public/**", "!**/*.css"],
+      "outputs": []
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!public/**", "!**/*.css"],
+      "outputs": []
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
+    },
+    "topo": {
+      "dependsOn": ["^topo"]
     }
   }
 }

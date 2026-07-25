@@ -2,8 +2,12 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./base.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    // Node16, not "CommonJS"/"Node": the node10 resolver ignores `exports`
+    // maps, so `@repo/contracts/admin` and `@repo/database/enums` would not
+    // resolve as types. Emit is unaffected — nest-cli builds with SWC
+    // (`typeCheck: false`), which always emits CommonJS.
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "lib": ["ES2023"],
     "target": "ES2023",
     "experimentalDecorators": true,

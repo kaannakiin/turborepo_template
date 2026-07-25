@@ -7,6 +7,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { HealthModule } from './modules/health/health.module';
 import { UsersModule } from './modules/users/users.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -14,7 +15,11 @@ import { UsersModule } from './modules/users/users.module';
       isGlobal: true,
       cache: true,
       validate: validateEnv,
+      // The repo-root .env is shared with the Prisma CLI
+      // (packages/database/prisma.config.ts) so DATABASE_URL is declared once.
+      envFilePath: ['../../.env'],
     }),
+    PrismaModule,
     HealthModule,
     UsersModule,
   ],

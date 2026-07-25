@@ -1,0 +1,42 @@
+// The `prisma-client` generator (default since v7) emits plain TypeScript into
+// a path we control, split across several files:
+//
+//   client.ts  -> PrismaClient + every type. Pulls in server-only transitive
+//                 deps, so it must never reach a browser bundle.
+//   enums.ts   -> enum values only. No transitive deps, tree-shakes cleanly,
+//                 safe on both server and client.
+//   models.ts  -> model types only (exposed as `<Name>Model`, e.g. UserModel).
+//   browser.ts -> browser-safe barrel; deliberately has no PrismaClient.
+//   internal/* -> unstable, never import directly.
+//
+// `src/{server,enums,models}.ts` re-export exactly one of these each, and the
+// package's `exports` map is what enforces the boundary.
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  runtime  = "nodejs"
+
+  // This package is CommonJS-typed, so the generated code must use `__dirname`
+  // rather than `import.meta.url`. Keeping both in sync is what lets `tsx`
+  // execute the seed script straight from source.
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}

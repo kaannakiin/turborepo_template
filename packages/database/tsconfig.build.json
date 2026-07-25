@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    // The generated Prisma client is transpiled, never bundled: its runtime
+    // resolves the query compiler out of `node_modules/@prisma/client`, and a
+    // bundler rolling those relative paths up would break that lookup. Plain
+    // `tsc` also skips the .d.ts rollup that chokes on Prisma's type surface.
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "src/seed.ts"]
+}

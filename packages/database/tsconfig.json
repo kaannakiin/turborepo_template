@@ -1,0 +1,12 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    // NodeNext (from base.json) resolves this package as CommonJS because the
+    // package.json has no `"type"` field — which is exactly what the generated
+    // client's `moduleFormat = "cjs"` expects.
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["src", "prisma.config.ts", "tsup.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

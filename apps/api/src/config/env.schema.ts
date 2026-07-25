@@ -7,6 +7,9 @@ export const EnvSchema = z.object({
   PORT: z.coerce.number().int().positive().default(4000),
   // Comma-separated list of allowed origins for CORS.
   CORS_ORIGINS: z.string().default('http://localhost:3000'),
+  // Same value the Prisma CLI reads from the repo-root .env — one URL, one
+  // source. No default: an unset database is a startup failure, not a fallback.
+  DATABASE_URL: z.url(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

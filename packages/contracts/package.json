@@ -2,16 +2,24 @@
   "name": "@repo/contracts",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+    "./shared": {
+      "types": "./dist/shared.d.ts",
+      "import": "./dist/shared.mjs",
+      "default": "./dist/shared.js"
+    },
+    "./auth": {
+      "types": "./dist/auth.d.ts",
+      "import": "./dist/auth.mjs",
+      "default": "./dist/auth.js"
+    },
+    "./admin": {
+      "types": "./dist/admin.d.ts",
+      "import": "./dist/admin.mjs",
+      "default": "./dist/admin.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"
@@ -23,6 +31,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/database": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -30,7 +39,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
-    "tsup": "^8.5.1",
+    "tsup": "catalog:",
     "typescript": "catalog:"
   }
 }

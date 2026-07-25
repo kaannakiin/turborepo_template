@@ -24,6 +24,7 @@ coverage
 # Build Outputs
 build
 dist
+packages/database/src/generated
 .output/
 .nitro/
 .tanstack/

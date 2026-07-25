@@ -4,7 +4,7 @@
   "cacheMaxAge": "14d",
   "cacheMaxSize": "5GB",
   "envMode": "strict",
-  "globalDependencies": ["pnpm-workspace.yaml"],
+  "globalDependencies": ["pnpm-workspace.yaml", ".env"],
   "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
@@ -16,7 +16,7 @@
         "!**/*.spec.ts"
       ],
       "outputs": ["dist/**", "!**/*.tsbuildinfo"],
-      "env": ["NODE_ENV", "VITE_API_URL"]
+      "env": ["NODE_ENV", "VITE_API_URL", "DATABASE_URL"]
     },
     "lint": {
       "dependsOn": ["^topo"],
@@ -26,15 +26,43 @@
     "check-types": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!public/**", "!**/*.css"],
-      "outputs": []
+      "outputs": [],
+      "env": ["DATABASE_URL"]
     },
     "dev": {
       "dependsOn": ["^build"],
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["DATABASE_URL", "PORT", "CORS_ORIGINS", "VITE_API_URL"]
     },
     "topo": {
       "dependsOn": ["^topo"]
+    },
+
+    // Database tasks. Never cached — they talk to a live server, so a cache hit
+    // would be a lie. `envMode: "strict"` means DATABASE_URL has to be declared
+    // here or the Prisma CLI receives an empty environment.
+    "db:migrate": {
+      "cache": false,
+      "persistent": true,
+      "env": ["DATABASE_URL"]
+    },
+    "db:deploy": {
+      "cache": false,
+      "env": ["DATABASE_URL"]
+    },
+    "db:push": {
+      "cache": false,
+      "env": ["DATABASE_URL"]
+    },
+    "db:seed": {
+      "cache": false,
+      "env": ["DATABASE_URL"]
+    },
+    "db:studio": {
+      "cache": false,
+      "persistent": true,
+      "env": ["DATABASE_URL"]
     }
   }
 }

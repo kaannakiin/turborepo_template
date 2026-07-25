@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { HealthSchema, type Health } from "@repo/contracts";
+import { HealthSchema, type Health } from "@repo/contracts/shared";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 

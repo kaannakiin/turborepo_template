@@ -1,0 +1,32 @@
+{
+  "zod": {
+    "invalidType": "Geçersiz değer: {{expected}} bekleniyordu",
+    "tooSmall": {
+      "string": "En az {{min}} karakter girin",
+      "number": "En az {{min}} olmalı",
+      "array": "En az {{min}} öğe seçin",
+      "default": "Değer çok küçük (en az {{min}})"
+    },
+    "tooBig": {
+      "string": "En fazla {{max}} karakter girin",
+      "number": "En fazla {{max}} olmalı",
+      "array": "En fazla {{max}} öğe seçin",
+      "default": "Değer çok büyük (en fazla {{max}})"
+    },
+    "invalidFormat": {
+      "email": "Geçerli bir e-posta adresi girin",
+      "url": "Geçerli bir URL girin",
+      "uuid": "Geçerli bir tanımlayıcı girin",
+      "datetime": "Geçerli bir tarih girin",
+      "default": "Geçersiz biçim"
+    },
+    "invalidValue": "Geçersiz seçim",
+    "notMultipleOf": "{{divisor}} sayısının katı olmalı",
+    "unrecognizedKeys": "Tanınmayan alanlar: {{keys}}",
+    "custom": "Geçersiz değer",
+    "generic": "Geçersiz değer"
+  },
+  "email": {
+    "invalid": "Geçerli bir e-posta adresi girin"
+  }
+}

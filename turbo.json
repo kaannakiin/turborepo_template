@@ -7,8 +7,13 @@
   "globalDependencies": ["pnpm-workspace.yaml", ".env"],
   "globalEnv": ["NODE_ENV"],
   "tasks": {
+    "generate": {
+      "cache": true,
+      "inputs": ["prisma/schema/**", "prisma.config.ts"],
+      "outputs": ["src/generated/prisma/**"]
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "generate"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "!**/*.md",
@@ -24,13 +29,13 @@
       "outputs": []
     },
     "check-types": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "generate"],
       "inputs": ["$TURBO_DEFAULT$", "!**/*.md", "!public/**", "!**/*.css"],
       "outputs": [],
       "env": ["DATABASE_URL"]
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "generate"],
       "cache": false,
       "persistent": true,
       "env": ["DATABASE_URL", "PORT", "CORS_ORIGINS", "VITE_API_URL"]

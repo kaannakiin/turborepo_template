@@ -20,7 +20,7 @@ export class UsersService {
 
   async findOne(id: string): Promise<User> {
     const row = await this.prisma.user.findUnique({ where: { id } });
-    if (!row) throw new NotFoundException(`User ${id} not found`);
+    if (!row) throw userNotFound(id);
     return toContract(row);
   }
 
@@ -30,7 +30,7 @@ export class UsersService {
       return toContract(row);
     } catch (error) {
       if (isUniqueViolation(error)) {
-        throw new ConflictException(`Email ${input.email} is already taken`);
+        throw emailTaken(input.email);
       }
       throw error;
     }
@@ -42,10 +42,10 @@ export class UsersService {
       return toContract(row);
     } catch (error) {
       if (isNotFound(error)) {
-        throw new NotFoundException(`User ${id} not found`);
+        throw userNotFound(id);
       }
       if (isUniqueViolation(error)) {
-        throw new ConflictException('Email is already taken');
+        throw emailTaken(input.email ?? '');
       }
       throw error;
     }
@@ -56,12 +56,22 @@ export class UsersService {
       await this.prisma.user.delete({ where: { id } });
     } catch (error) {
       if (isNotFound(error)) {
-        throw new NotFoundException(`User ${id} not found`);
+        throw userNotFound(id);
       }
       throw error;
     }
   }
 }
+
+/**
+ * The `code` is an @repo/i18n translation key; the exception filter localizes
+ * it per request and echoes it verbatim as the wire-level error code.
+ */
+const userNotFound = (id: string): NotFoundException =>
+  new NotFoundException({ code: 'errors.users.notFound', params: { id } });
+
+const emailTaken = (email: string): ConflictException =>
+  new ConflictException({ code: 'errors.users.emailTaken', params: { email } });
 
 /**
  * DB row -> wire type. This function is the entire reason the contract is not

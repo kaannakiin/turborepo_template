@@ -5,39 +5,54 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import type { Request, Response } from 'express';
-import { ZodValidationException } from 'nestjs-zod';
-import type { ZodError } from 'zod';
+} from "@nestjs/common";
+import { type TranslateFn } from "@repo/i18n/instance";
+import { isTranslationKey, resolveZodIssueKey } from "@repo/i18n/zod";
+import type { Request, Response } from "express";
+import { ZodValidationException } from "nestjs-zod";
+import type { ZodError } from "zod";
+import { I18nService } from "../../i18n/i18n.service";
 
 interface ErrorBody {
   statusCode: number;
+  code: string;
   message: string;
   path: string;
   timestamp: string;
-  /** Field-level issues, present only for validation failures. */
-  errors?: { path: string; message: string }[];
+  errors?: { path: string; code: string; message: string }[];
 }
+
+interface ResolvedError {
+  code: string;
+  message: string;
+  errors?: ErrorBody["errors"];
+}
+
+const STATUS_FALLBACK_KEY: Record<number, string> = {
+  [HttpStatus.BAD_REQUEST]: "errors.http.badRequest",
+  [HttpStatus.UNAUTHORIZED]: "errors.http.unauthorized",
+  [HttpStatus.FORBIDDEN]: "errors.http.forbidden",
+  [HttpStatus.NOT_FOUND]: "errors.http.notFound",
+  [HttpStatus.CONFLICT]: "errors.http.conflict",
+  [HttpStatus.INTERNAL_SERVER_ERROR]: "errors.http.internal",
+};
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
+  constructor(private readonly i18n: I18nService) {}
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
+    const t = this.i18n.translatorFor(request.locale);
 
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    // Never leak internals of an unhandled error to the client.
-    const message =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Internal server error';
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(
@@ -46,23 +61,55 @@ export class AllExceptionsFilter implements ExceptionFilter {
       );
     }
 
+    const resolved = resolve(exception, status, t);
+
     const body: ErrorBody = {
       statusCode: status,
-      message,
+      code: resolved.code,
+      message: resolved.message,
       path: request.url,
       timestamp: new Date().toISOString(),
     };
-
-    // Validation issues describe the caller's own payload, so surfacing them
-    // leaks nothing — and without them a 400 is unactionable for the client.
-    if (exception instanceof ZodValidationException) {
-      const zodError = exception.getZodError() as ZodError;
-      body.errors = zodError.issues.map((issue) => ({
-        path: issue.path.join('.'),
-        message: issue.message,
-      }));
-    }
+    if (resolved.errors) body.errors = resolved.errors;
 
     response.status(status).json(body);
   }
+}
+
+function resolve(
+  exception: unknown,
+  status: number,
+  t: TranslateFn,
+): ResolvedError {
+  if (exception instanceof ZodValidationException) {
+    const zodError = exception.getZodError() as ZodError;
+    return {
+      code: "errors.validation.failed",
+      message: t("errors.validation.failed"),
+      errors: zodError.issues.map((issue) => {
+        const { key, params } = resolveZodIssueKey(issue);
+        return {
+          path: issue.path.join("."),
+          code: key,
+          message: t(key, params),
+        };
+      }),
+    };
+  }
+
+  if (exception instanceof HttpException) {
+    const res = exception.getResponse();
+    if (typeof res === "object" && res !== null && "code" in res) {
+      const { code, params } = res as {
+        code: unknown;
+        params?: Record<string, unknown>;
+      };
+      if (typeof code === "string" && isTranslationKey(code)) {
+        return { code, message: t(code, params) };
+      }
+    }
+  }
+
+  const fallback = STATUS_FALLBACK_KEY[status] ?? "errors.http.generic";
+  return { code: fallback, message: t(fallback) };
 }

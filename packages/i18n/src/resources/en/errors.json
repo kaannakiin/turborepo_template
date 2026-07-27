@@ -1,0 +1,18 @@
+{
+  "validation": {
+    "failed": "Validation failed"
+  },
+  "http": {
+    "badRequest": "Invalid request",
+    "unauthorized": "You need to sign in",
+    "forbidden": "You are not allowed to perform this action",
+    "notFound": "Resource not found",
+    "conflict": "The request conflicts with the current state",
+    "internal": "An unexpected error occurred",
+    "generic": "Something went wrong"
+  },
+  "users": {
+    "notFound": "User with id {{id}} was not found",
+    "emailTaken": "The email {{email}} is already taken"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "validation": {
+    "failed": "Doğrulama başarısız"
+  },
+  "http": {
+    "badRequest": "Geçersiz istek",
+    "unauthorized": "Oturum açmanız gerekiyor",
+    "forbidden": "Bu işlem için yetkiniz yok",
+    "notFound": "Kaynak bulunamadı",
+    "conflict": "İstek mevcut durumla çakışıyor",
+    "internal": "Beklenmeyen bir hata oluştu",
+    "generic": "Bir hata oluştu"
+  },
+  "users": {
+    "notFound": "{{id}} kimlikli kullanıcı bulunamadı",
+    "emailTaken": "{{email}} adresi zaten kullanımda"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "zod": {
+    "invalidType": "Invalid value: expected {{expected}}",
+    "tooSmall": {
+      "string_one": "Enter at least {{count}} character",
+      "string_other": "Enter at least {{count}} characters",
+      "string": "Enter at least {{min}} characters",
+      "number": "Must be at least {{min}}",
+      "array_one": "Select at least {{count}} item",
+      "array_other": "Select at least {{count}} items",
+      "array": "Select at least {{min}} items",
+      "default": "Value is too small (minimum {{min}})"
+    },
+    "tooBig": {
+      "string_one": "Enter at most {{count}} character",
+      "string_other": "Enter at most {{count}} characters",
+      "string": "Enter at most {{max}} characters",
+      "number": "Must be at most {{max}}",
+      "array_one": "Select at most {{count}} item",
+      "array_other": "Select at most {{count}} items",
+      "array": "Select at most {{max}} items",
+      "default": "Value is too big (maximum {{max}})"
+    },
+    "invalidFormat": {
+      "email": "Enter a valid email address",
+      "url": "Enter a valid URL",
+      "uuid": "Enter a valid identifier",
+      "datetime": "Enter a valid date",
+      "default": "Invalid format"
+    },
+    "invalidValue": "Invalid selection",
+    "notMultipleOf": "Must be a multiple of {{divisor}}",
+    "unrecognizedKeys": "Unrecognized fields: {{keys}}",
+    "custom": "Invalid value",
+    "generic": "Invalid value"
+  },
+  "email": {
+    "invalid": "Enter a valid email address"
+  }
+}

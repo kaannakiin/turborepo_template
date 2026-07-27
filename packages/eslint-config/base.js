@@ -19,6 +19,14 @@ export const config = [
     },
     rules: {
       "turbo/no-undeclared-env-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   {
@@ -33,7 +41,7 @@ export const config = [
 
 /**
  * Guard for every package whose code can end up in a browser bundle
- * (`apps/web`, `packages/contracts`, `packages/ui`).
+ * (`apps/web`, `packages/contracts`).
  *
  * `@repo/database` already blocks this at resolution time via the `browser`
  * export condition, but that failure surfaces late — during a Vite build, in a

@@ -46,7 +46,6 @@ pnpm turbo run generate      # prisma generate (cached; also runs before build/d
 pnpm turbo run db:migrate    # prisma migrate dev
 pnpm turbo run db:deploy     # prisma migrate deploy
 pnpm turbo run db:push
-pnpm turbo run db:seed
 pnpm turbo run db:studio
 ```
 
@@ -81,7 +80,8 @@ Plain Zod schemas + inferred types (no ts-rest). One domain folder per subpath e
 
 ### packages/database — `@repo/database`
 
-- Prisma 7, multi-file schema in `prisma/schema/` organized by domain folders (`admin/`, `shared/`), mirroring contracts. Generator config lives in `prisma/schema/schema.prisma`; client is generated into `src/generated/prisma` (CJS).
+- Prisma 7, multi-file schema in `prisma/schema/` organized by domain folders (`admin/`, `auth/`), mirroring contracts. Generator config lives in `prisma/schema/schema.prisma`; client is generated into `src/generated/prisma` (CJS). There is no separate `enums.prisma`: each enum lives in the file of the model that uses it (`Role`/`UserStatus` in `admin/user.prisma`, `DeviceType` in `auth/device.prisma`, …).
+- `users.email` is `CITEXT`, so the initial migration hand-adds `CREATE EXTENSION citext` — Prisma emits the column type but never the extension.
 - Exactly three public entries:
   - `/server` — PrismaClient + pg adapter. CJS-only, consumed only by apps/api. Under the `browser` export condition it resolves to a stub that throws.
   - `/enums` — enum runtime values, browser-safe.

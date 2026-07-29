@@ -1,0 +1,35 @@
+enum DeviceType {
+  DESKTOP
+  MOBILE
+  TABLET
+  BOT
+  UNKNOWN
+}
+
+model UserDevice {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  userId BigInt
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // sha256(userId | osName | osMajorVersion | browserName | deviceType), hex.
+  // The full User-Agent is deliberately excluded: every browser patch release
+  // would otherwise register a new device.
+  fingerprint String  @db.Char(64)
+  displayName String? @db.VarChar(120)
+
+  deviceType     DeviceType @default(UNKNOWN)
+  osName         String?    @db.VarChar(64)
+  osVersion      String?    @db.VarChar(32)
+  browserName    String?    @db.VarChar(64)
+  browserVersion String?    @db.VarChar(32)
+
+  firstSeenAt DateTime @default(now()) @db.Timestamptz(3)
+  lastSeenAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  sessions UserSession[]
+
+  @@unique([userId, fingerprint])
+  @@map("user_devices")
+}

@@ -1,9 +1,47 @@
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  // Citext is what makes this unique constraint case-insensitive. It requires
+  // `CREATE EXTENSION citext`, added by hand to the initial migration.
+  email String  @unique @db.Citext
+  // Must be stored E.164-normalized ("+905551112233"). Without normalization
+  // "0555..." and "+90555..." are two rows and uniqueness means nothing.
+  phone String? @unique @db.VarChar(20)
+
+  passwordHash String @db.Text
+  name         String @db.VarChar(80)
+  surname      String @db.VarChar(80)
+
+  role   Role       @default(USER)
+  status UserStatus @default(PENDING_VERIFICATION)
+
+  emailVerifiedAt   DateTime? @db.Timestamptz(3)
+  phoneVerifiedAt   DateTime? @db.Timestamptz(3)
+  passwordChangedAt DateTime  @default(now()) @db.Timestamptz(3)
+  lastLoginAt       DateTime? @db.Timestamptz(3)
+
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  // The unique constraints above stay global, so a soft delete must tombstone
+  // email/phone or the address can never be registered again. A partial unique
+  // index is not an option: the next `prisma migrate dev` would drop it.
+  deletedAt DateTime? @db.Timestamptz(3)
+
+  sessions   UserSession[]
+  devices    UserDevice[]
+  authTokens AuthToken[]
 
   @@map("users")
 }

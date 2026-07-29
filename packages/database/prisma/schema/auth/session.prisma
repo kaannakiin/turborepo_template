@@ -1,0 +1,56 @@
+enum SessionRevokeReason {
+  USER_LOGOUT
+  USER_REVOKED_SESSION
+  USER_REVOKED_ALL
+  PASSWORD_CHANGED
+  TOKEN_REUSE_DETECTED
+  ADMIN_REVOKED
+}
+
+model UserSession {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  userId BigInt
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deviceId BigInt?
+  device   UserDevice? @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+
+  // Rotation family. On every refresh this row is UPDATEd in place:
+  // previousTokenHash <- refreshTokenHash, refreshTokenHash <- new. A hit on
+  // previousTokenHash means a stolen token was replayed, and the whole family
+  // is revoked.
+  familyId          String @default(uuid(7)) @db.Uuid
+  // sha256 of a 32-byte random token. Not Argon2: the token is already
+  // high-entropy, and hashing it on every refresh would just add latency.
+  refreshTokenHash  Bytes
+  previousTokenHash Bytes?
+  rotationCount     Int    @default(0)
+
+  ipAddress String  @db.Inet
+  userAgent String? @db.Text
+
+  countryCode String?  @db.Char(2)
+  region      String?  @db.VarChar(96)
+  city        String?  @db.VarChar(96)
+  timezone    String?  @db.VarChar(64)
+  latitude    Decimal? @db.Decimal(8, 5)
+  longitude   Decimal? @db.Decimal(8, 5)
+  asn         Int?
+  isp         String?  @db.VarChar(128)
+
+  createdAt    DateTime             @default(now()) @db.Timestamptz(3)
+  lastUsedAt   DateTime             @default(now()) @db.Timestamptz(3)
+  expiresAt    DateTime             @db.Timestamptz(3)
+  revokedAt    DateTime?            @db.Timestamptz(3)
+  revokeReason SessionRevokeReason?
+
+  @@unique([refreshTokenHash])
+  @@index([previousTokenHash])
+  @@index([userId, lastUsedAt(sort: Desc)])
+  @@index([familyId])
+  @@index([deviceId])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}

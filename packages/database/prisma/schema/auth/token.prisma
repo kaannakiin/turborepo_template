@@ -1,0 +1,33 @@
+enum AuthTokenPurpose {
+  EMAIL_VERIFICATION
+  PHONE_VERIFICATION
+  PASSWORD_RESET
+}
+
+model AuthToken {
+  id BigInt @id @default(autoincrement())
+
+  userId BigInt
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  purpose AuthTokenPurpose
+  // Address the token was sent to. Verification must reject the token when
+  // this no longer matches the user's current email/phone, otherwise changing
+  // the address and clicking an old link verifies the wrong one.
+  target  String           @db.VarChar(320)
+
+  tokenHash    Bytes
+  // A 6-digit SMS OTP is brute-forceable; the token is burned after N tries.
+  attemptCount Int   @default(0)
+
+  ipAddress String? @db.Inet
+
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  expiresAt  DateTime  @db.Timestamptz(3)
+  consumedAt DateTime? @db.Timestamptz(3)
+
+  @@unique([tokenHash])
+  @@index([userId, purpose])
+  @@index([expiresAt])
+  @@map("auth_tokens")
+}

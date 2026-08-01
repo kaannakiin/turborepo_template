@@ -18,10 +18,20 @@
         "$TURBO_DEFAULT$",
         "!**/*.md",
         "!**/*.test.ts",
-        "!**/*.spec.ts"
+        "!**/*.spec.ts",
+        "!test/**"
       ],
       "outputs": ["dist/**", "!**/*.tsbuildinfo"],
-      "env": ["NODE_ENV", "VITE_API_URL", "DATABASE_URL"]
+      "env": [
+        "NODE_ENV",
+        "VITE_API_URL",
+        "DATABASE_URL",
+        "JWT_SECRET",
+        "JWT_ACCESS_TTL",
+        "REFRESH_TTL_WEB",
+        "REFRESH_TTL_MOBILE",
+        "COOKIE_DOMAIN"
+      ]
     },
     "lint": {
       "dependsOn": ["^topo"],
@@ -38,7 +48,38 @@
       "dependsOn": ["^build", "generate"],
       "cache": false,
       "persistent": true,
-      "env": ["DATABASE_URL", "PORT", "CORS_ORIGINS", "VITE_API_URL"]
+      "env": [
+        "DATABASE_URL",
+        "PORT",
+        "CORS_ORIGINS",
+        "VITE_API_URL",
+        "JWT_SECRET",
+        "JWT_ACCESS_TTL",
+        "REFRESH_TTL_WEB",
+        "REFRESH_TTL_MOBILE",
+        "COOKIE_DOMAIN"
+      ]
+    },
+    "test": {
+      "dependsOn": ["^build", "generate"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.md"],
+      "outputs": []
+    },
+    "test:e2e": {
+      "dependsOn": ["^build", "generate"],
+      "cache": false,
+      "env": [
+        "DATABASE_URL",
+        "TEST_DATABASE_URL",
+        "THROTTLE_E2E",
+        "JWT_SECRET",
+        "JWT_ACCESS_TTL",
+        "REFRESH_TTL_WEB",
+        "REFRESH_TTL_MOBILE",
+        "COOKIE_DOMAIN",
+        "CORS_ORIGINS",
+        "PORT"
+      ]
     },
     "topo": {
       "dependsOn": ["^topo"]

@@ -1,10 +1,5 @@
 import type { $ZodIssue, $ZodRawIssue } from "zod/v4/core";
 
-/**
- * Dotted, namespace-prefixed strings are treated as translation keys. Contract
- * authors opt into custom copy by writing one as a schema-level `error`
- * ("validation.email.invalid"); plain prose never matches this shape.
- */
 const KEY_PATTERN = /^(common|validation|errors)(\.[a-zA-Z0-9_]+)+$/;
 
 export function isTranslationKey(message: string): boolean {
@@ -16,23 +11,11 @@ export interface ResolvedIssueKey {
   params: Record<string, unknown>;
 }
 
-// Sub-keys that exist in the validation resources; anything else (e.g. origin
-// "set", format "regex") falls back to the "default" entry so t() never gets a
-// key with no translation behind it.
 const KNOWN_ORIGINS = new Set(["string", "number", "array"]);
 const KNOWN_FORMATS = new Set(["email", "url", "uuid", "datetime"]);
 
-type IssueLike = $ZodIssue | $ZodRawIssue;
+export type IssueLike = $ZodIssue | $ZodRawIssue;
 
-/**
- * Maps a zod v4 issue to a stable translation key + interpolation params.
- * Works on both finished issues (API filter, after `parse` threw) and raw
- * issues (inside an error map, before zod attaches a message).
- *
- * A schema-level `error: "validation.x.y"` wins zod's precedence chain, so it
- * arrives here as `issue.message` — the key is honored but the params derived
- * from the issue are kept, so "{{min}}" still interpolates in custom copy.
- */
 export function resolveZodIssueKey(issue: IssueLike): ResolvedIssueKey {
   const path = (issue.path ?? []).join(".");
   const resolved = resolveByCode(issue, path);
@@ -83,6 +66,23 @@ function resolveByCode(issue: IssueLike, path: string): ResolvedIssueKey {
       return {
         key: "validation.zod.unrecognizedKeys",
         params: { keys: issue.keys.join(", "), path },
+      };
+    case "invalid_union":
+      return {
+        key: issue.discriminator
+          ? "validation.zod.invalidUnion.discriminator"
+          : "validation.zod.invalidUnion.default",
+        params: { discriminator: issue.discriminator, path },
+      };
+    case "invalid_key":
+      return {
+        key: "validation.zod.invalidKey",
+        params: { origin: issue.origin, path },
+      };
+    case "invalid_element":
+      return {
+        key: "validation.zod.invalidElement",
+        params: { origin: issue.origin, path },
       };
     case "custom":
       return {

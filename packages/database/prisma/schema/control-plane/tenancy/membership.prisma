@@ -1,0 +1,39 @@
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  REMOVED
+}
+
+model Membership {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  userId BigInt
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tenantId BigInt
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Leaving and rejoining reuses this row. A soft delete would need a second
+  // row for the same pair and collide with the unique below.
+  status MembershipStatus @default(INVITED)
+
+  joinedAt   DateTime? @db.Timestamptz(3)
+  lastSeenAt DateTime? @db.Timestamptz(3)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  roleAssignments RoleAssignment[]
+  sessions        UserSession[]
+  sentInvitations TenantInvitation[]
+
+  @@unique([userId, tenantId])
+  // Target of the composite foreign key on role_assignments: it is what lets
+  // Postgres prove that an assignment's denormalized tenantId is the
+  // membership's own tenant.
+  @@unique([tenantId, id])
+  @@index([tenantId, status])
+  @@map("memberships")
+}

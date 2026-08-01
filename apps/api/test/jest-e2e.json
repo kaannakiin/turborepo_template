@@ -1,0 +1,11 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "roots": ["<rootDir>/test/e2e"],
+  "testEnvironment": "node",
+  "testRegex": "\\.e2e-spec\\.ts$",
+  "transform": { "^.+\\.ts$": "@swc/jest" },
+  "moduleNameMapper": { "^@api/(.*)$": "<rootDir>/src/$1" },
+  "globalSetup": "<rootDir>/test/support/setup-e2e.ts",
+  "testTimeout": 30000
+}

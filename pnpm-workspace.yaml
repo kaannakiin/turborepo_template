@@ -6,6 +6,11 @@ catalog:
   zod: ^4.4.3
   i18next: ^26.3.6
 
+  # apps/web-portal (via a lazy chunk) and apps/api both validate against the same
+  # metadata set, so a number can never pass the client and fail the server.
+  # One catalog entry keeps them on the same release.
+  libphonenumber-js: ^1.13.9
+
   typescript: 5.9.2
   eslint: ^9.39.1
   "@types/node": ^22.15.3
@@ -34,3 +39,6 @@ onlyBuiltDependencies:
   # this, `prisma migrate` has nothing to run.
   - "@prisma/engines"
   - prisma
+  # Native N-API binding built by node-gyp-build at install time; without this
+  # entry pnpm blocks the install script and require("argon2") fails.
+  - argon2

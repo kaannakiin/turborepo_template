@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // `@api/*` exists only in this program. tsconfig.json declares no `paths`,
+    // so the same specifier written inside `src` is TS2307 — which is the
+    // point: nothing SWC compiles into `dist` can ever carry the alias.
+    "paths": { "@api/*": ["./src/*"] },
+    "rootDir": ".",
+    "noEmit": true
+  },
+  // src/types holds ambient global augmentations (Express.Request.locale).
+  // A .d.ts is never pulled in by an import, so it has to be listed or every
+  // src file this program loads as a dependency loses those globals.
+  "include": ["test", "src/types"]
+}

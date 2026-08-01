@@ -41,7 +41,7 @@ export const config = [
 
 /**
  * Guard for every package whose code can end up in a browser bundle
- * (`apps/web`, `packages/contracts`).
+ * (`apps/web-portal`, `packages/contracts`).
  *
  * `@repo/database` already blocks this at resolution time via the `browser`
  * export condition, but that failure surfaces late — during a Vite build, in a
@@ -71,6 +71,16 @@ export const browserSafe = [
               ],
               message:
                 "Server-only. Browser-facing code may import @repo/database/enums (runtime values) or @repo/database/models (types) — nothing else.",
+            },
+            {
+              group: ["@repo/contracts/solutions/*"],
+              message:
+                "This app is a control-plane client. A solution's contracts belong to that solution's own frontend; importing them here is what makes the portal grow a second product's vocabulary.",
+            },
+            {
+              group: ["@repo/utils/*"],
+              message:
+                'Statically importing @repo/utils/phone pulls libphonenumber-js metadata into the entry bundle. Reach it through `await import("@repo/utils/phone")` instead — no-restricted-imports does not flag dynamic imports. packages/contracts must not reference it at all; the metadata-backed check is injected via createRegisterRequestSchema({ isValidPhone }).',
             },
           ],
         },

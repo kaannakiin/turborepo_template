@@ -93,15 +93,15 @@ You can develop a specific package by using a [filter](https://turborepo.dev/doc
 With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
 
 ```sh
-turbo dev --filter=web
+turbo dev --filter=web-portal
 ```
 
 Without global `turbo`:
 
 ```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+npx turbo dev --filter=web-portal
+pnpm exec turbo dev --filter=web-portal
+pnpm exec turbo dev --filter=web-portal
 ```
 
 ### Remote Caching

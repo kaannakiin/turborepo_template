@@ -1,0 +1,33 @@
+model Role {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  // NULL marks a system role: valid in every tenant, not editable, not
+  // deletable. A separate isSystem flag would be a second source of truth for
+  // the same fact.
+  tenantId BigInt?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  key         String  @db.VarChar(48)
+  name        String  @db.VarChar(80)
+  description String? @db.VarChar(240)
+
+  // The permission catalog lives in code (@repo/contracts/control-plane/access); only granted
+  // keys are stored. A Permission table would give fake integrity — the
+  // catalog is code, not data — and add a join to the hot resolution path.
+  permissions String[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  assignments RoleAssignment[]
+  invitations TenantInvitation[]
+
+  // Does not constrain system roles: Postgres treats NULLs as distinct, so two
+  // rows with tenantId NULL and the same key would both be accepted. A partial
+  // unique index on key WHERE tenantId IS NULL closes that, added by hand to
+  // the migration.
+  @@unique([tenantId, key])
+  @@index([permissions], type: Gin)
+  @@map("roles")
+}

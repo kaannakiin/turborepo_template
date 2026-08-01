@@ -8,8 +8,23 @@
     "forbidden": "You are not allowed to perform this action",
     "notFound": "Resource not found",
     "conflict": "The request conflicts with the current state",
+    "tooManyRequests": "Too many requests, please try again later",
     "internal": "An unexpected error occurred",
     "generic": "Something went wrong"
+  },
+  "auth": {
+    "invalidCredentials": "Incorrect email/phone or password",
+    "accountSuspended": "This account has been suspended",
+    "emailTaken": "This email is already registered",
+    "phoneTaken": "This phone number is already registered",
+    "refreshRequired": "A refresh token is required",
+    "refreshInvalid": "Your session has expired, please sign in again",
+    "refreshReuseDetected": "Suspicious activity was detected on this session, please sign in again",
+    "sessionNotFound": "Session not found",
+    "unauthorized": "You need to sign in",
+    "verifyInvalid": "This verification code is invalid or has expired",
+    "verifyTargetMismatch": "This verification code was issued for a different address",
+    "verifyTargetMissing": "There is no address to verify for this account"
   },
   "users": {
     "notFound": "User with id {{id}} was not found",

@@ -9,15 +9,25 @@
       "import": "./dist/shared.mjs",
       "default": "./dist/shared.js"
     },
-    "./auth": {
-      "types": "./dist/auth.d.ts",
-      "import": "./dist/auth.mjs",
-      "default": "./dist/auth.js"
+    "./control-plane/identity": {
+      "types": "./dist/control-plane/identity.d.ts",
+      "import": "./dist/control-plane/identity.mjs",
+      "default": "./dist/control-plane/identity.js"
     },
-    "./admin": {
-      "types": "./dist/admin.d.ts",
-      "import": "./dist/admin.mjs",
-      "default": "./dist/admin.js"
+    "./control-plane/tenancy": {
+      "types": "./dist/control-plane/tenancy.d.ts",
+      "import": "./dist/control-plane/tenancy.mjs",
+      "default": "./dist/control-plane/tenancy.js"
+    },
+    "./control-plane/access": {
+      "types": "./dist/control-plane/access.d.ts",
+      "import": "./dist/control-plane/access.mjs",
+      "default": "./dist/control-plane/access.js"
+    },
+    "./control-plane/platform": {
+      "types": "./dist/control-plane/platform.d.ts",
+      "import": "./dist/control-plane/platform.mjs",
+      "default": "./dist/control-plane/platform.js"
     },
     "./package.json": "./package.json"
   },

@@ -8,8 +8,23 @@
     "forbidden": "Bu işlem için yetkiniz yok",
     "notFound": "Kaynak bulunamadı",
     "conflict": "İstek mevcut durumla çakışıyor",
+    "tooManyRequests": "Çok fazla istek gönderildi, lütfen daha sonra tekrar deneyin",
     "internal": "Beklenmeyen bir hata oluştu",
     "generic": "Bir hata oluştu"
+  },
+  "auth": {
+    "invalidCredentials": "E-posta/telefon veya şifre hatalı",
+    "accountSuspended": "Bu hesap askıya alınmış",
+    "emailTaken": "Bu e-posta adresi zaten kayıtlı",
+    "phoneTaken": "Bu telefon numarası zaten kayıtlı",
+    "refreshRequired": "Yenileme jetonu gerekli",
+    "refreshInvalid": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın",
+    "refreshReuseDetected": "Bu oturumda şüpheli bir etkinlik tespit edildi, lütfen tekrar giriş yapın",
+    "sessionNotFound": "Oturum bulunamadı",
+    "unauthorized": "Oturum açmanız gerekiyor",
+    "verifyInvalid": "Bu doğrulama kodu geçersiz veya süresi dolmuş",
+    "verifyTargetMismatch": "Bu doğrulama kodu farklı bir adres için üretilmiş",
+    "verifyTargetMissing": "Bu hesapta doğrulanacak bir adres yok"
   },
   "users": {
     "notFound": "{{id}} kimlikli kullanıcı bulunamadı",

@@ -2,14 +2,18 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   // One entry per public subpath. There is no root barrel on purpose: importing
-  // `@repo/contracts/shared` must never drag `admin` into the bundle.
+  // `@repo/contracts/shared` must never drag `control-plane/platform` into the
+  // bundle. A slash in an entry key becomes an output subdirectory, so the
+  // plane prefix survives into `dist/` and into the `exports` map unchanged.
   entry: {
     shared: "src/shared/index.ts",
-    auth: "src/auth/index.ts",
-    admin: "src/admin/index.ts",
+    "control-plane/identity": "src/control-plane/identity/index.ts",
+    "control-plane/tenancy": "src/control-plane/tenancy/index.ts",
+    "control-plane/access": "src/control-plane/access/index.ts",
+    "control-plane/platform": "src/control-plane/platform/index.ts",
   },
   // Dual format is required: apps/api (CommonJS) resolves `require`,
-  // apps/web (ESM via Vite) resolves `import`. The package itself is
+  // apps/web-portal (ESM via Vite) resolves `import`. The package itself is
   // CommonJS-typed (no `"type"` field), matching @repo/database, so `.js` is
   // CJS and `.mjs` is ESM — and a single `.d.ts` serves both.
   format: ["esm", "cjs"],

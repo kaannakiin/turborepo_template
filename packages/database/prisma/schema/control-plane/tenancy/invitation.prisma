@@ -1,0 +1,41 @@
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+model TenantInvitation {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  tenantId BigInt
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Not a userId: the invitee may have no account yet. Citext to match the
+  // lookup semantics of users.email, so an invite to "Ada@x.com" is found when
+  // "ada@x.com" signs up.
+  email String @db.Citext
+
+  roleId BigInt
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  // Same shape as AuthToken: sha256 of a 32-byte random token, never the token
+  // itself.
+  tokenHash Bytes @unique
+
+  invitedByMembershipId BigInt?
+  invitedBy             Membership? @relation(fields: [invitedByMembershipId], references: [id], onDelete: SetNull)
+
+  status InvitationStatus @default(PENDING)
+
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  expiresAt  DateTime  @db.Timestamptz(3)
+  acceptedAt DateTime? @db.Timestamptz(3)
+  revokedAt  DateTime? @db.Timestamptz(3)
+
+  @@index([tenantId, status])
+  @@index([email])
+  @@index([expiresAt])
+  @@map("tenant_invitations")
+}

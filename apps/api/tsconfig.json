@@ -5,7 +5,14 @@
     // paths from `extends` relative to the file that declares them, so a
     // preset-level "./dist" would emit into packages/typescript-config/dist.
     "outDir": "./dist"
+    // Do not add `rootDir`. nest-cli's SWC builder stops stripping the leading
+    // `src/` when it is set, so the entrypoint lands at dist/src/main.js and
+    // `start` (node dist/main) breaks.
   },
-  "include": ["src"],
+  // `test` is deliberately absent: it is typechecked by tsconfig.test.json,
+  // the only program that maps the `@api/*` alias. Keeping the two programs
+  // separate is what makes the alias impossible to use from `src` — this
+  // program cannot resolve it, so `check-types` fails at the import site.
+  "include": ["src", "jest.config.js"],
   "exclude": ["node_modules", "dist"]
 }

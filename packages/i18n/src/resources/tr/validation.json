@@ -21,6 +21,12 @@
       "default": "Geçersiz biçim"
     },
     "invalidValue": "Geçersiz seçim",
+    "invalidUnion": {
+      "discriminator": "Geçersiz seçim",
+      "default": "Değer izin verilen biçimlerin hiçbirine uymuyor"
+    },
+    "invalidKey": "Geçersiz anahtar",
+    "invalidElement": "Geçersiz öğe",
     "notMultipleOf": "{{divisor}} sayısının katı olmalı",
     "unrecognizedKeys": "Tanınmayan alanlar: {{keys}}",
     "custom": "Geçersiz değer",
@@ -28,5 +34,14 @@
   },
   "email": {
     "invalid": "Geçerli bir e-posta adresi girin"
+  },
+  "phone": {
+    "invalid": "Geçerli bir telefon numarası girin"
+  },
+  "password": {
+    "mismatch": "Şifreler eşleşmiyor"
+  },
+  "tenant": {
+    "slug": "Yalnızca küçük harf, rakam ve tire kullanın; başı ve sonu harf veya rakam olmalı"
   }
 }

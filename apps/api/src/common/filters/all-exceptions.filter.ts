@@ -7,7 +7,7 @@ import {
   Logger,
 } from "@nestjs/common";
 import { type TranslateFn } from "@repo/i18n/instance";
-import { isTranslationKey, resolveZodIssueKey } from "@repo/i18n/zod";
+import { isTranslationKey, translateZodIssues } from "@repo/i18n/zod";
 import type { Request, Response } from "express";
 import { ZodValidationException } from "nestjs-zod";
 import type { ZodError } from "zod";
@@ -34,6 +34,7 @@ const STATUS_FALLBACK_KEY: Record<number, string> = {
   [HttpStatus.FORBIDDEN]: "errors.http.forbidden",
   [HttpStatus.NOT_FOUND]: "errors.http.notFound",
   [HttpStatus.CONFLICT]: "errors.http.conflict",
+  [HttpStatus.TOO_MANY_REQUESTS]: "errors.http.tooManyRequests",
   [HttpStatus.INTERNAL_SERVER_ERROR]: "errors.http.internal",
 };
 
@@ -86,14 +87,7 @@ function resolve(
     return {
       code: "errors.validation.failed",
       message: t("errors.validation.failed"),
-      errors: zodError.issues.map((issue) => {
-        const { key, params } = resolveZodIssueKey(issue);
-        return {
-          path: issue.path.join("."),
-          code: key,
-          message: t(key, params),
-        };
-      }),
+      errors: translateZodIssues(zodError.issues, t),
     };
   }
 

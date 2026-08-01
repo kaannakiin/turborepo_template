@@ -1,0 +1,25 @@
+model RoleAssignment {
+  id BigInt @id @default(autoincrement())
+
+  // tenantId is denormalized so the composite foreign key can prove it equals
+  // the membership's tenant, and so a future RLS policy has a column to read.
+  // A separate Tenant relation would be redundant — this key already carries it.
+  tenantId     BigInt
+  membershipId BigInt
+  membership   Membership @relation(fields: [tenantId, membershipId], references: [tenantId, id], onDelete: Cascade)
+
+  roleId BigInt
+  // Restrict, not Cascade: a role that is still granted to someone must not
+  // disappear silently. The policy belongs here, not in a service.
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  grantedByMembershipId BigInt?
+  createdAt             DateTime @default(now()) @db.Timestamptz(3)
+
+  @@unique([membershipId, roleId])
+  // Postgres creates no index for the referencing side of a foreign key, and
+  // deleting a membership probes exactly this pair.
+  @@index([tenantId, membershipId])
+  @@index([roleId])
+  @@map("role_assignments")
+}

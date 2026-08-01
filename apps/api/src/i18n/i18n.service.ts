@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   createI18nInstance,
   getTranslator,
   type TranslateFn,
-} from '@repo/i18n/instance';
-import { DEFAULT_LOCALE } from '@repo/i18n/locale';
-import type { i18n } from 'i18next';
+} from "@repo/i18n/instance";
+import { DEFAULT_LOCALE } from "@repo/i18n/locale";
+import type { i18n } from "i18next";
 
 @Injectable()
 export class I18nService {

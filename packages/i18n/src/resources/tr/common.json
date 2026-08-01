@@ -4,5 +4,29 @@
   "status": "durum",
   "uptime": "çalışma süresi",
   "timestamp": "zaman damgası",
-  "language": "Dil"
+  "language": "Dil",
+  "authz": {
+    "permission": {
+      "tenant": {
+        "read": "Kuruluşu görüntüle",
+        "update": "Kuruluşu düzenle"
+      },
+      "member": {
+        "read": "Üyeleri görüntüle",
+        "invite": "Üye davet et",
+        "update": "Üyeleri düzenle",
+        "remove": "Üyeleri çıkar"
+      },
+      "role": {
+        "read": "Rolleri görüntüle",
+        "create": "Rol oluştur",
+        "update": "Rolleri düzenle",
+        "delete": "Rolleri sil"
+      },
+      "session": {
+        "read": "Oturumları görüntüle",
+        "revoke": "Oturumları sonlandır"
+      }
+    }
+  }
 }

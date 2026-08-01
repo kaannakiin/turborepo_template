@@ -1,0 +1,8 @@
+{
+  // Editors resolve a file to a project by walking up to the nearest file
+  // literally named `tsconfig.json`; `tsconfig.test.json` is only ever reached
+  // through `tsc -p`. Without this the language server finds ../tsconfig.json,
+  // whose `include` omits `test`, and falls back to an inferred project with
+  // no @types/jest and no `@api/*` — green in CI, red in the IDE.
+  "extends": "../tsconfig.test.json"
+}

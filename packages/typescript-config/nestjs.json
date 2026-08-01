@@ -3,7 +3,7 @@
   "extends": "./base.json",
   "compilerOptions": {
     // Node16, not "CommonJS"/"Node": the node10 resolver ignores `exports`
-    // maps, so `@repo/contracts/admin` and `@repo/database/enums` would not
+    // maps, so `@repo/contracts/platform` and `@repo/database/enums` would not
     // resolve as types. Emit is unaffected — nest-cli builds with SWC
     // (`typeCheck: false`), which always emits CommonJS.
     "module": "Node16",

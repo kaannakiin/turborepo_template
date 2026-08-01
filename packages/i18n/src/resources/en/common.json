@@ -4,5 +4,29 @@
   "status": "status",
   "uptime": "uptime",
   "timestamp": "timestamp",
-  "language": "Language"
+  "language": "Language",
+  "authz": {
+    "permission": {
+      "tenant": {
+        "read": "View organization",
+        "update": "Edit organization"
+      },
+      "member": {
+        "read": "View members",
+        "invite": "Invite members",
+        "update": "Edit members",
+        "remove": "Remove members"
+      },
+      "role": {
+        "read": "View roles",
+        "create": "Create roles",
+        "update": "Edit roles",
+        "delete": "Delete roles"
+      },
+      "session": {
+        "read": "View sessions",
+        "revoke": "Revoke sessions"
+      }
+    }
+  }
 }

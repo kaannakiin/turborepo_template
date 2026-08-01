@@ -29,6 +29,12 @@
       "default": "Invalid format"
     },
     "invalidValue": "Invalid selection",
+    "invalidUnion": {
+      "discriminator": "Invalid selection",
+      "default": "Value does not match any allowed format"
+    },
+    "invalidKey": "Invalid key",
+    "invalidElement": "Invalid item",
     "notMultipleOf": "Must be a multiple of {{divisor}}",
     "unrecognizedKeys": "Unrecognized fields: {{keys}}",
     "custom": "Invalid value",
@@ -36,5 +42,14 @@
   },
   "email": {
     "invalid": "Enter a valid email address"
+  },
+  "phone": {
+    "invalid": "Enter a valid phone number"
+  },
+  "password": {
+    "mismatch": "Passwords do not match"
+  },
+  "tenant": {
+    "slug": "Use lowercase letters, digits and hyphens only, starting and ending with a letter or digit"
   }
 }

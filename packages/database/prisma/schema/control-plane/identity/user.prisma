@@ -1,0 +1,54 @@
+// Who operates the platform itself, not who does what inside a tenant. Tenant
+// authority lives on Membership + RoleAssignment; keeping both on one enum is
+// what breaks the moment a user belongs to a second tenant.
+enum PlatformRole {
+  NONE
+  SUPPORT
+  SUPERADMIN
+}
+
+enum UserStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+}
+
+model User {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  // Citext is what makes this unique constraint case-insensitive. It requires
+  // `CREATE EXTENSION citext`, added by hand to the initial migration.
+  // Nullable because phone-only registration creates no email; the unique
+  // constraint is unaffected (Postgres allows any number of NULLs).
+  email String? @unique @db.Citext
+  // Must be stored E.164-normalized ("+905551112233"). Without normalization
+  // "0555..." and "+90555..." are two rows and uniqueness means nothing.
+  phone String? @unique @db.VarChar(20)
+
+  passwordHash String @db.Text
+  name         String @db.VarChar(80)
+  surname      String @db.VarChar(80)
+
+  platformRole PlatformRole @default(NONE)
+  status       UserStatus   @default(PENDING_VERIFICATION)
+
+  emailVerifiedAt   DateTime? @db.Timestamptz(3)
+  phoneVerifiedAt   DateTime? @db.Timestamptz(3)
+  passwordChangedAt DateTime  @default(now()) @db.Timestamptz(3)
+  lastLoginAt       DateTime? @db.Timestamptz(3)
+
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  // The unique constraints above stay global, so a soft delete must tombstone
+  // email/phone or the address can never be registered again. A partial unique
+  // index is not an option: the next `prisma migrate dev` would drop it.
+  deletedAt DateTime? @db.Timestamptz(3)
+
+  sessions    UserSession[]
+  devices     UserDevice[]
+  authTokens  AuthToken[]
+  memberships Membership[]
+
+  @@map("users")
+}

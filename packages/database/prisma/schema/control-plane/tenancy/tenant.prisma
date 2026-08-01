@@ -1,0 +1,31 @@
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+model Tenant {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid(2)) @db.VarChar(24)
+
+  // Doubles as the subdomain label, so Citext keeps "Acme" and "acme" from
+  // resolving to two tenants. The DNS-label syntax itself is a CHECK added by
+  // hand to the migration; Prisma cannot express it.
+  slug String @unique @db.Citext
+  name String @db.VarChar(120)
+
+  status TenantStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  // The slug stays globally unique, so a soft delete must tombstone it or the
+  // subdomain can never be claimed again. Same reasoning as users.email — a
+  // partial unique index is not expressible in the schema.
+  deletedAt DateTime? @db.Timestamptz(3)
+
+  memberships Membership[]
+  roles       Role[]
+  invitations TenantInvitation[]
+
+  @@map("tenants")
+}
